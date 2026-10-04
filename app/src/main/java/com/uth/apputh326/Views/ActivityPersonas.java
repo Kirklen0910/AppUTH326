@@ -2,43 +2,66 @@ package com.uth.apputh326.Views;
 
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.uth.apputh326.Controllers.PersonasController;
+import com.uth.apputh326.Models.Personas;
 import com.uth.apputh326.R;
-
-import java.util.Calendar;
 
 public class ActivityPersonas extends AppCompatActivity {
 
     EditText nombre, apellido, fechaNac, direccion, telefono, correo;
-
     Button agregarPersona;
+
+    PersonasController personasController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_personas);
 
+        InitControls();
+        personasController = new PersonasController(this);
 
+        agregarPersona.setOnClickListener(v -> {
+            Personas persona = new Personas();
+            persona.setNombre(nombre.getText().toString());
+            persona.setApellido(apellido.getText().toString());
+            persona.setFechaNac(fechaNac.getText().toString());
+            persona.setDireccion(direccion.getText().toString());
+            persona.setTelefono(telefono.getText().toString());
+            persona.setCorreo(correo.getText().toString());
+
+            long resultado = personasController.insertarPersona(persona);
+
+            if (resultado > 0) {
+                Toast.makeText(this, "Persona agregada correctamente", Toast.LENGTH_SHORT).show();
+                limpiarCampos();
+            } else {
+                Toast.makeText(this, "Error al agregar persona", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void InitControls()
-    {
-        nombre = (EditText) findViewById(R.id.nombre);
-        apellido = (EditText) findViewById(R.id.apellido);
-        fechaNac = (android.widget.EditText) findViewById(R.id.fechaNac);
-        direccion = (EditText) findViewById(R.id.direccion);
-        telefono = (EditText) findViewById(R.id.telefono);
-        correo = (EditText) findViewById(R.id.correo);
-        agregarPersona = (Button) findViewById(R.id.agregarPersona);
+    private void InitControls() {
+        nombre = findViewById(R.id.nombre);
+        apellido = findViewById(R.id.apellido);
+        fechaNac = findViewById(R.id.fechaNac);
+        direccion = findViewById(R.id.direccion);
+        telefono = findViewById(R.id.telefono);
+        correo = findViewById(R.id.correo);
+        agregarPersona = findViewById(R.id.agregarPersona);
+    }
 
+    private void limpiarCampos() {
+        nombre.setText("");
+        apellido.setText("");
+        fechaNac.setText("");
+        direccion.setText("");
+        telefono.setText("");
+        correo.setText("");
     }
 }
