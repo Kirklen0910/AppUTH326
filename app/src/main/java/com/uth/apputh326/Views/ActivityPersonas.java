@@ -3,6 +3,8 @@ package com.uth.apputh326.Views;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +13,13 @@ import com.uth.apputh326.Controllers.PersonasController;
 import com.uth.apputh326.Models.Personas;
 import com.uth.apputh326.R;
 
+import java.util.List;
+
 public class ActivityPersonas extends AppCompatActivity {
 
     EditText nombre, apellido, fechaNac, direccion, telefono, correo;
-    Button agregarPersona;
+    Button agregarPersona, listarPersonas;
+    ListView listViewPersonas;
 
     PersonasController personasController;
 
@@ -23,9 +28,10 @@ public class ActivityPersonas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personas);
 
-        InitControls();
         personasController = new PersonasController(this);
+        InitControls();
 
+        // Botón para agregar persona
         agregarPersona.setOnClickListener(v -> {
             Personas persona = new Personas();
             persona.setNombre(nombre.getText().toString());
@@ -44,6 +50,24 @@ public class ActivityPersonas extends AppCompatActivity {
                 Toast.makeText(this, "Error al agregar persona", Toast.LENGTH_SHORT).show();
             }
         });
+
+        // Botón para listar personas
+        listarPersonas.setOnClickListener(v -> {
+            List<Personas> lista = personasController.obtenerPersonas();
+
+            if (lista.isEmpty()) {
+                Toast.makeText(this, "No hay personas registradas", Toast.LENGTH_SHORT).show();
+            } else {
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_list_item_1,
+                        lista.stream()
+                                .map(p -> p.getId() + " - " + p.getNombre() + " " + p.getApellido())
+                                .toArray(String[]::new)
+                );
+                listViewPersonas.setAdapter(adapter);
+            }
+        });
     }
 
     private void InitControls() {
@@ -53,7 +77,10 @@ public class ActivityPersonas extends AppCompatActivity {
         direccion = findViewById(R.id.direccion);
         telefono = findViewById(R.id.telefono);
         correo = findViewById(R.id.correo);
+
         agregarPersona = findViewById(R.id.agregarPersona);
+        listarPersonas = findViewById(R.id.listarPersonas);
+        listViewPersonas = findViewById(R.id.listViewPersonas);
     }
 
     private void limpiarCampos() {
