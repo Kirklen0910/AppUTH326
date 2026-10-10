@@ -20,7 +20,6 @@ public class PersonasController {
         databaseHelper = new DatabaseHelper(context);
     }
 
-    // Insertar persona
     public long insertarPersona(Personas persona) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
@@ -37,7 +36,6 @@ public class PersonasController {
         return resultado;
     }
 
-    // Obtener todas las personas
     public List<Personas> obtenerPersonas() {
         List<Personas> lista = new ArrayList<>();
         SQLiteDatabase db = databaseHelper.getReadableDatabase();

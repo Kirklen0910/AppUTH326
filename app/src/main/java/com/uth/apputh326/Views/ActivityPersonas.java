@@ -1,6 +1,7 @@
 package com.uth.apputh326.Views;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -31,27 +32,58 @@ public class ActivityPersonas extends AppCompatActivity {
         personasController = new PersonasController(this);
         InitControls();
 
-        // Botón para agregar persona
         agregarPersona.setOnClickListener(v -> {
+            String nom = nombre.getText().toString().trim();
+            String ape = apellido.getText().toString().trim();
+            String fecha = fechaNac.getText().toString().trim();
+            String dir = direccion.getText().toString().trim();
+            String tel = telefono.getText().toString().trim();
+            String cor = correo.getText().toString().trim();
+
+            if (nom.isEmpty()) {
+                nombre.setError("El nombre es obligatorio");
+                nombre.requestFocus();
+                return;
+            }
+            if (ape.isEmpty()) {
+                apellido.setError("El apellido es obligatorio");
+                apellido.requestFocus();
+                return;
+            }
+            if (fecha.isEmpty()) {
+                fechaNac.setError("La fecha de nacimiento es obligatoria");
+                fechaNac.requestFocus();
+                return;
+            }
+            if (cor.isEmpty()) {
+                correo.setError("El correo es obligatorio");
+                correo.requestFocus();
+                return;
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(cor).matches()) {
+                correo.setError("Formato de correo inválido");
+                correo.requestFocus();
+                return;
+            }
+
             Personas persona = new Personas();
-            persona.setNombre(nombre.getText().toString());
-            persona.setApellido(apellido.getText().toString());
-            persona.setFechaNac(fechaNac.getText().toString());
-            persona.setDireccion(direccion.getText().toString());
-            persona.setTelefono(telefono.getText().toString());
-            persona.setCorreo(correo.getText().toString());
+            persona.setNombre(nom);
+            persona.setApellido(ape);
+            persona.setFechaNac(fecha);
+            persona.setDireccion(dir);
+            persona.setTelefono(tel);
+            persona.setCorreo(cor);
 
             long resultado = personasController.insertarPersona(persona);
 
             if (resultado > 0) {
-                Toast.makeText(this, "Persona agregada correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Persona registrada correctamente", Toast.LENGTH_SHORT).show();
                 limpiarCampos();
             } else {
-                Toast.makeText(this, "Error al agregar persona", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error al registrar persona", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Botón para listar personas
         listarPersonas.setOnClickListener(v -> {
             List<Personas> lista = personasController.obtenerPersonas();
 

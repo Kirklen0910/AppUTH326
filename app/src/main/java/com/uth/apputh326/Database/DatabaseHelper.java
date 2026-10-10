@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    // Constructor simplificado usando DBConfig
     public DatabaseHelper(@Nullable Context context) {
         super(context, DBConfig.DATABASE_NAME, null, DBConfig.DATABASE_VERSION);
     }
